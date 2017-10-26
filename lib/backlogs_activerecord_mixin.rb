@@ -167,8 +167,10 @@ module Backlogs
       end
 
       def list_commit
-        self.class.connection.execute("update #{self.class.table_name} set position = #{self.position} where id = #{self.id}") unless self.new_record?
+        if !self.position.blank?
+          self.class.connection.execute("update #{self.class.table_name} set position = #{self.position} where id = #{self.id}") unless self.new_record?
         #FIXME now the cached lower/higher_item are wrong during this request. So are those from our old and new peers.
+        end
       end
 
       def list_prev_next(dir, scoped=true)
