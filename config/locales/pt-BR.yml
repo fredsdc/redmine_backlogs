@@ -228,7 +228,6 @@ pt-BR:
   label_current_version: Sprint atual
   label_show_completed_versions: Exibir sprints completos
   label_scm: 'Controle de sprint:'
-  button_rollback: Voltar para este sprint
   notice_unable_delete_version: Não foi possível excluir o sprint
   permission_manage_versions: Gerenciar sprints
   error_can_not_reopen_issue_on_closed_version: Uma tarefa atribuída a um sprint fechado não pode ser reaberta
