@@ -94,22 +94,19 @@ filter:progid:DXImageTransform.Microsoft.Gradient(Enabled=1,GradientType=0,Start
     sprint.new_record? ? l("version_status_#{Version::VERSION_STATUSES.first}") : l("version_status_#{sprint.status}")
   end
 
+  def status_from_story(story)
+    story.default_status if story.new_record?
+    story.status
+  end
+
   def status_id_or_default(story)
-    #story.new_record? ? IssueStatus.default.id : story.status.id
-    if story.new_record?
-      story.default_status ? story.default_status.id : 0
-    else
-      story.status ? story.status.id : 0
-    end
+    story_status = status_from_story(story)
+    story_status ? story_status.id : 0
   end
 
   def status_label_or_default(story)
-    #story.new_record? ? IssueStatus.default.name : story.status.name
-    if story.new_record?
-      story.default_status ? story.default_status.name : ""
-    else
-      story.status ? story.status.name : ""
-    end
+    story_status = status_from_story(story)
+    story_status ? story_status.name : ""
   end
 
   def sprint_html_id_or_empty(sprint)
@@ -273,7 +270,7 @@ filter:progid:DXImageTransform.Microsoft.Gradient(Enabled=1,GradientType=0,Start
   # Convert selected ids to integer and remove blank values.
   def selected_ids(options)
     return nil if options.nil?
-    options.collect{|o| o.to_i unless o.blank?}.compact! 
+    options.collect{|o| o.to_i unless o.blank?}.compact!
   end
 
   def format_release_sharing(v)
