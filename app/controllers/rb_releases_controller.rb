@@ -22,23 +22,18 @@ class RbReleasesController < RbApplicationController
   end
 
   def new
-    @release = RbRelease.new
-    @release.project = @project
-  end
-
-  def create
-    @release = RbRelease.new(release_params)
-    @release.project = @project
-    if @release.save
-      flash[:notice] = l(:notice_successful_create)
-      redirect_to :action => 'index', :project_id => @project
-    else
-      render action: :new
+    @release = RbRelease.new(:project => @project)
+    if request.post?
+      @release.attributes = params[:release]
+      if @release.save
+        flash[:notice] = l(:notice_successful_create)
+        redirect_to :action => 'index', :project_id => @project
+      end
     end
   end
 
   def edit
-    if request.post? and @release.update_attributes(release_params)
+    if request.post? and @release.update_attributes(params[:release])
       flash[:notice] = l(:notice_successful_update)
       redirect_to :controller => 'rb_releases', :action => 'show', :release_id => @release
 #    else
