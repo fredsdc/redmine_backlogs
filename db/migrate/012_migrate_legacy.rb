@@ -1,4 +1,4 @@
-class MigrateLegacy < ActiveRecord::Migration
+class MigrateLegacy < ActiveRecord::Migration[5.2]
   def self.normalize_value(v, t)
     v = v[1] if v.is_a?(Array)
 
@@ -74,7 +74,7 @@ class MigrateLegacy < ActiveRecord::Migration
       end
 
       trackers = {}
-      
+
       # find story/task trackers per project
       execute("
           select projects.id as project_id, pt.tracker_id as tracker_id
@@ -93,7 +93,7 @@ class MigrateLegacy < ActiveRecord::Migration
 
       say_with_time "Migrating Backlogs data..." do
         bottom = 0
-        execute("select coalesce(max(position), 0) from items").each { |row| 
+        execute("select coalesce(max(position), 0) from items").each { |row|
           bottom = row[0].to_i
         }
         bottom += 1
