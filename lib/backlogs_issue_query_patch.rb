@@ -25,10 +25,14 @@ module Backlogs
       base.class_eval do
         unloadable # Send unloadable so it will not be unloaded in development
 
-        alias_method_chain :available_filters, :backlogs_issue_type
-        alias_method_chain :available_columns, :backlogs_issue_type
-        alias_method_chain :sql_for_field, :backlogs_issue_type
-        alias_method_chain :joins_for_order_statement, :backlogs_issue_type
+        alias_method :available_filters_without_backlogs_issue_type, :available_filters
+        alias_method :available_filters, :available_filters_with_backlogs_issue_type
+        alias_method :available_columns_without_backlogs_issue_type, :available_columns
+        alias_method :available_columns, :available_columns_with_backlogs_issue_type
+        alias_method :sql_for_field_without_backlogs_issue_type, :sql_for_field
+        alias_method :sql_for_field, :sql_for_field_with_backlogs_issue_type
+        alias_method :joins_for_order_statement_without_backlogs_issue_type, :joins_for_order_statement
+        alias_method :joins_for_order_statement, :joins_for_order_statement_with_backlogs_issue_type
       end
     end
 
@@ -78,13 +82,13 @@ module Backlogs
         end
         @available_filters = @available_filters.merge(backlogs_filters)
       end
-      
+
       def available_columns_with_backlogs_issue_type
         @available_columns = available_columns_without_backlogs_issue_type
         return @available_columns if !show_backlogs_issue_items?(project) or @backlog_columns_included
-        
+
         @backlog_columns_included = true
-        
+
         @available_columns << QueryColumn.new(:story_points, :sortable => "#{Issue.table_name}.story_points")
         @available_columns << QueryColumn.new(:velocity_based_estimate)
         @available_columns << QueryColumn.new(:position, :sortable => "#{Issue.table_name}.position")
@@ -136,7 +140,7 @@ module Backlogs
 
         return sql
       end
-      
+
       private
       def show_backlogs_issue_items?(project)
         !project.nil? and project.module_enabled?('backlogs')
@@ -153,7 +157,7 @@ module Backlogs
       def add_available_column(column)
         self.available_columns << (column)
       end
-      
+
     end
   end
 end
