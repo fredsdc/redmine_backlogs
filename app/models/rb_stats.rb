@@ -83,7 +83,7 @@ class RbStats < ActiveRecord::Base
   end
 
   def self.rebuild(issue)
-    RbJournal.delete_all(:issue_id => issue.id)
+    RbJournal.where(:issue_id => issue.id).delete_all
 
     changes = {}
     RbJournal::REDMINE_PROPERTIES.each{|prop| changes[prop] = [] }

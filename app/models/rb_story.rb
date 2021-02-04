@@ -291,11 +291,11 @@ class RbStory < Issue
   end
 
   def save_release_burnchart_data(series,release_burndown_id)
-    RbReleaseBurnchartDayCache.delete_all(
+    RbReleaseBurnchartDayCache.where(
       ["issue_id = ? AND release_id = ? AND day IN (?)",
        self.id,
        release_burndown_id,
-       series.series(:day)])
+       series.series(:day)]).delete_all
 
     series.each{|s|
       RbReleaseBurnchartDayCache.create(:issue_id => self.id,
