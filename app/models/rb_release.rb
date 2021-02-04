@@ -63,7 +63,7 @@ class ReleaseBurndown
                .order(:day).group(:day).sum(:closed_points)
 
     # Series collected, now format data for jqplot
-    # Slightly hacky formatting to get the correct view. Might change when this jqplot issue is 
+    # Slightly hacky formatting to get the correct view. Might change when this jqplot issue is
     # sorted out:
     # See https://bitbucket.org/cleonello/jqplot/issue/181/nagative-values-in-stacked-bar-chart
     @data[:closed_points] = closed.values
@@ -165,21 +165,14 @@ class RbRelease < ActiveRecord::Base
   has_many :issues, :class_name => 'RbStory', :foreign_key => 'release_id', :dependent => :nullify
   has_many :rb_release_burnchart_day_cache, :dependent => :delete_all, :foreign_key => 'release_id'
 
-  attr_accessible :project_id, :name, :release_start_date, :release_end_date, :status
-  attr_accessible :project, :description, :planned_velocity, :sharing
-
   validates_presence_of :project_id, :name, :release_start_date, :release_end_date
   validates_inclusion_of :status, :in => RELEASE_STATUSES
   validates_inclusion_of :sharing, :in => RELEASE_SHARINGS
   validates_length_of :name, :maximum => 64
   validate :dates_valid?
 
-  scope :open, -> {
-    where(:status => 'open')
-  }
-  scope :closed, -> {
-    where(:status => 'closed')
-  }
+  scope :open, -> { where(:status => 'open') }
+  scope :closed, -> { where(:status => 'closed') }
   scope :visible, lambda {|*args| joins(:project).includes(:project).
                                     where(Project.allowed_to_condition(args.first || User.current, :view_releases)) }
 
@@ -256,8 +249,7 @@ class RbRelease < ActiveRecord::Base
   end
 
   def has_burndown?
-    false #FIXME release burndown broken
-    #return self.stories.size > 0
+    return false # Never a burndown for a release
   end
 
   def burndown
