@@ -2,11 +2,11 @@ class SumRemainingHours < ActiveRecord::Migration[5.2]
   def self.up
     unless RbStory.trackers == []
       create_table :backlogs_tmp_story_remaining_hours do |t|
-        t.column :tmp_id, :integer, :null => false
-        t.column :tmp_root_id, :integer, :null => false
-        t.column :tmp_lft, :integer, :null => false
-        t.column :tmp_rgt, :integer, :null => false
-        t.column :tmp_remaining_hours, :float, :null => false
+        t.column :tmp_id, :integer, null: false
+        t.column :tmp_root_id, :integer, null: false
+        t.column :tmp_lft, :integer, null: false
+        t.column :tmp_rgt, :integer, null: false
+        t.column :tmp_remaining_hours, :float, null: false
       end
 
 

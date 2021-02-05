@@ -48,23 +48,23 @@ Given /^I am logged out$/ do
 end
 
 Given /^I am viewing the master backlog$/ do
-  visit url_for(:controller => :projects, :action => :show, :id => @project.identifier, :only_path=>true)
+  visit url_for(controller: :projects, action: :show, id: @project.identifier, :only_path=>true)
   verify_request_status(200)
   click_link("Backlogs")
-  page.current_path.should == url_for(:controller => :rb_master_backlogs, :action => :show, :project_id => @project.identifier, :only_path=>true)
+  page.current_path.should == url_for(controller: :rb_master_backlogs, action: :show, project_id: @project.identifier, :only_path=>true)
   verify_request_status(200)
 end
 
 Then /^at ([0-9]{4}-[0-9]{2}-[0-9]{2} [0-9]{2}:[0-9]{2}:[0-9]{2})$/ do |time|
-  set_now(time, :msg => "at #{time}")
+  set_now(time, msg: "at #{time}")
 end
 Then /^on ([0-9]{4}-[0-9]{2}-[0-9]{2})$/ do |date|
-  set_now(time, :msg => "on #{date}")
+  set_now(time, msg: "on #{date}")
 end
 Then /^after (the current )?sprint(.*)$/ do |current, name|
   raise "Improperly phrased" if (current == '' && name == '') || (current != '' && name != '')
   sprint = current == '' ? RbSprint.find_by_name(name) : current_sprint
-  set_now(sprint.effective_date + 1, :msg => "after sprint #{sprint.name}")
+  set_now(sprint.effective_date + 1, msg: "after sprint #{sprint.name}")
 end
 
 Given /^the current (time|date) (is|forwards to) (.+)$/ do |what, action, time|
@@ -73,21 +73,21 @@ Given /^the current (time|date) (is|forwards to) (.+)$/ do |what, action, time|
           when 'forwards to' then false
           else raise "I don't know how to #{action} time"
           end
-  set_now(time, :msg => "#{what} #{action} #{time}", :reset => reset)
+  set_now(time, msg: "#{what} #{action} #{time}", reset: reset)
 end
 
 Given /^I am viewing the burndown for (.+)$/ do |sprint_name|
-  visit url_for(:controller => :rb_burndown_charts, :action => :show, :sprint_id => current_sprint(sprint_name).id, :only_path=>true)
+  visit url_for(controller: :rb_burndown_charts, action: :show, sprint_id: current_sprint(sprint_name).id, :only_path=>true)
   verify_request_status(200)
 end
 
 Given /^I am viewing the taskboard for (.+)$/ do |sprint_name|
-  visit url_for(:controller => :rb_taskboards, :action => :show, :sprint_id => current_sprint(sprint_name).id, :only_path=>true)
+  visit url_for(controller: :rb_taskboards, action: :show, sprint_id: current_sprint(sprint_name).id, :only_path=>true)
   verify_request_status(200)
 end
 
 Given /^I am viewing the backlog settings page for project (.*)$/ do |project_name|
-  visit url_for(:controller => :projects, :action => :settings, :id => Project.find(project_name).id, :tab => 'backlogs', :only_path=>true)
+  visit url_for(controller: :projects, action: :settings, id: Project.find(project_name).id, tab: 'backlogs', :only_path=>true)
   verify_request_status(200)
 end
 
@@ -135,7 +135,7 @@ end
 
 Given /^I want to create an impediment for (.+)$/ do |sprint_subject|
   sprint = RbSprint.where(name: sprint_subject ).first
-  @impediment_params = initialize_impediment_params(:project_id => sprint.project_id, :fixed_version_id => sprint.id)
+  @impediment_params = initialize_impediment_params(project_id: sprint.project_id, fixed_version_id: sprint.id)
 end
 
 Given /^I want to create a sprint$/ do
@@ -143,7 +143,7 @@ Given /^I want to create a sprint$/ do
 end
 
 Given /^I want to edit the task named (.+)$/ do |task_subject|
-  task = RbTask.where(:subject => task_subject ).first
+  task = RbTask.where(subject: task_subject ).first
   task.should_not be_nil
   @task_params = HashWithIndifferentAccess.new(task.attributes)
 end
@@ -161,7 +161,7 @@ Given /^I want to edit the sprint named (.+)$/ do |name|
 end
 
 Given /^I want to indicate that the impediment blocks (.+)$/ do |blocks_csv|
-  blocks_csv = RbStory.where( :subject => blocks_csv.split(', ') ).map{ |s| s.id }.join(',')
+  blocks_csv = RbStory.where( subject: blocks_csv.split(', ') ).map{ |s| s.id }.join(',')
   @impediment_params[:blocks] = blocks_csv
 end
 
@@ -195,12 +195,12 @@ Given /^the (.*) project has the backlogs plugin enabled$/ do |project_id|
   # Enable the backlogs plugin
   @project.enable_module!('backlogs')
 
-  defaultstatus = IssueStatus.find_by(:name => 'New')
+  defaultstatus = IssueStatus.find_by(name: 'New')
   # Configure the story and task trackers
-  story_trackers = [(Tracker.find_by_name('Story') || Tracker.create!(:name => 'Story', :default_status => defaultstatus))]
-  task_tracker = (Tracker.find_by_name('Task') || Tracker.create!(:name => 'Task', :default_status => defaultstatus))
+  story_trackers = [(Tracker.find_by_name('Story') || Tracker.create!(name: 'Story', default_status: defaultstatus))]
+  task_tracker = (Tracker.find_by_name('Task') || Tracker.create!(name: 'Task', default_status: defaultstatus))
 
-  copy_from = Tracker.find_by(:name => 'Feature request')
+  copy_from = Tracker.find_by(name: 'Feature request')
   story_trackers.each{|tracker|
     if copy_from.respond_to? :workflow_rules #redmine 2 master
       tracker.workflow_rules.copy(copy_from)
@@ -208,7 +208,7 @@ Given /^the (.*) project has the backlogs plugin enabled$/ do |project_id|
       tracker.workflows.copy(copy_from)
     end
   }
-  copy_from = Tracker.find_by(:name => 'Bug')
+  copy_from = Tracker.find_by(name: 'Bug')
   if copy_from.respond_to? :workflow_rules
     task_tracker.save!
     task_tracker.workflow_rules.copy(copy_from)
@@ -296,7 +296,7 @@ Given /^I have defined the following logins:$/ do |table|
     u.firstname = "Test"
     u.lastname = "Run"
     u.save!
-    m = Member.new(:role_ids => [Role.find_by_name("Developer").id], :user_id => u.id)
+    m = Member.new(role_ids: [Role.find_by_name("Developer").id], user_id: u.id)
     @project.members << m
   end
 end
@@ -307,7 +307,7 @@ Given /^I have made the following task mutations:$/ do |table|
     task = RbTask.find_by_subject(mutation.delete('task'))
     task.should_not be_nil
 
-    set_now(mutation.delete('day'), :msg => task.subject, :sprint => current_sprint)
+    set_now(mutation.delete('day'), msg: task.subject, sprint: current_sprint)
     Time.zone.now.should be >= task.created_on
 
     task.init_journal(User.current)
@@ -383,7 +383,7 @@ Given /^I have defined the following stories in the following sprints?:$/ do |ta
     params['release_id'] = RbRelease.find_by_name(story['release']).id if story['release'].to_s.strip != ''
     story.delete('release') unless story['release'].nil?
 
-    set_now(story.delete('day'), :msg => params['subject'], :sprint => sprint)
+    set_now(story.delete('day'), msg: params['subject'], sprint: sprint)
 
     story.should == {}
 
@@ -396,7 +396,7 @@ end
 
 Given /^I have defined the following tasks:$/ do |table|
   table.hashes.each do |task|
-    story = RbStory.where( :subject => task.delete('story') ).first
+    story = RbStory.where( subject: task.delete('story') ).first
     story.should_not be nil
 
     params = initialize_task_params(story.id)
@@ -414,9 +414,9 @@ Given /^I have defined the following tasks:$/ do |table|
 
     at = task.delete('when').to_s
     if at =~ /^0-9+/
-      set_now(at, :sprint => story.fixed_version, :msg => params['subject'])
+      set_now(at, sprint: story.fixed_version, msg: params['subject'])
     else
-      set_now(at, :msg => params['subject'])
+      set_now(at, msg: params['subject'])
     end
     Time.zone.now.should be >= story.created_on
 
@@ -436,9 +436,9 @@ Given /^I have defined the following impediments:$/ do |table|
   # sharing: an impediment can block more than on issues, each from different projects, when
   # cross_project_issue_relations is enabled. This is tested not here but using javascript tests.
   table.hashes.each do |impediment|
-    sprint = RbSprint.where(:name => impediment.delete('sprint') ).first
+    sprint = RbSprint.where(name: impediment.delete('sprint') ).first
     blocks = RbStory.where('subject in (?)', impediment['blocks'].split(', ')).first
-    params = initialize_impediment_params(:project_id => blocks.project_id, :fixed_version_id => sprint.id)
+    params = initialize_impediment_params(project_id: blocks.project_id, fixed_version_id: sprint.id)
     params['subject'] = impediment.delete('subject')
     params['blocks']  = RbStory.where(['subject in (?)', impediment.delete('blocks').split(', ')]).map{ |s| s.id }.join(',')
     impediment.should == {}
@@ -452,27 +452,27 @@ Given /^I have defined the following impediments:$/ do |table|
 end
 
 Given /^I am viewing the issues list$/ do
-  visit url_for(:controller => 'issues', :action=>'index', :project_id => @project, :only_path=>true)
+  visit url_for(controller: 'issues', :action=>'index', project_id: @project, :only_path=>true)
   verify_request_status(200)
 end
 
 Given /^I am viewing the issues sidebar$/ do
-  visit url_for(:controller => 'rb_hooks_render', :action=>'view_issues_sidebar', :project_id => @project, :only_path=>true)
+  visit url_for(controller: 'rb_hooks_render', :action=>'view_issues_sidebar', project_id: @project, :only_path=>true)
   verify_request_status(200)
 end
 
 Given /^I am viewing the issues sidebar for (.+)$/ do |name|
-  visit url_for(:controller => 'rb_hooks_render',
+  visit url_for(controller: 'rb_hooks_render',
                 :action=>'view_issues_sidebar',
-                :project_id => @project,
-                :sprint_id => RbSprint.find_by_name(name).id,
-                :only_path => true)
+                project_id: @project,
+                sprint_id: RbSprint.find_by_name(name).id,
+                only_path: true)
   verify_request_status(200)
 end
 
 Given /^I am viewing the issue named "([^\"]*)"$/ do |name|
   issue = Issue.find_by_subject(name)
-  visit url_for(:controller => 'issues', :action=>'show', :id => issue.id, :project_id => @project, :only_path=>true)
+  visit url_for(controller: 'issues', :action=>'show', id: issue.id, project_id: @project, :only_path=>true)
   verify_request_status(200)
 end
 
@@ -497,7 +497,7 @@ Given /^I have set the content for wiki page (.+) to (.+)$/ do |title, content|
   title = Wiki.titleize(title)
   page = @project.wiki.find_page(title)
   if ! page
-    page = WikiPage.new(:wiki => @project.wiki, :title => title)
+    page = WikiPage.new(wiki: @project.wiki, title: title)
     page.content = WikiContent.new
     page.save
   end
@@ -567,19 +567,19 @@ Given /^I am viewing log time for the (.*) project$/ do |project_id|
 end
 
 Given /^I set the hours spent to (\d+)$/ do |arg1|
-  fill_in 'time_entry[hours]', :with => arg1
+  fill_in 'time_entry[hours]', with: arg1
 end
 
 Given /^I set the remaining_hours to (\d+)$/ do |arg1|
-  fill_in 'remaining_hours', :with => arg1
+  fill_in 'remaining_hours', with: arg1
 end
 
 Given /^I am duplicating (.+) to (.+) for (.+)$/ do |story_old, story_new, sprint_name|
   issue = Issue.find_by_subject(story_old)
   visit "/projects/#{@project.id}/issues/#{issue.id}/copy"
   verify_request_status(200)
-  fill_in 'issue_subject', :with => story_new
-  page.select(sprint_name, :from => "issue_fixed_version_id")
+  fill_in 'issue_subject', with: story_new
+  page.select(sprint_name, from: "issue_fixed_version_id")
 end
 
 Given /^I choose to copy (none|open|all) tasks$/ do |copy_option|
@@ -598,7 +598,7 @@ Given /^I have defined the following projects:$/ do |table|
   table.hashes.each do |project|
     name = project.delete('name')
     project.should == {}
-    pr = Project.create! :identifier => name, :name => name
+    pr = Project.create! identifier: name, name: name
   end
 end
 
@@ -646,7 +646,7 @@ end
 
 
 Given /^I view the release page$/ do
-  visit url_for(:controller => :projects, :action => :show, :id => @project, :only_path => true)
+  visit url_for(controller: :projects, action: :show, id: @project, only_path: true)
   click_link("Releases")
 end
 
@@ -667,7 +667,7 @@ Given /^Issue done_ratio is determined by the issue field$/ do
 end
 
 Given(/^I request the csv format for release "(.*?)"$/) do |arg1|
-  r = RbRelease.where(:name => arg1).first
+  r = RbRelease.where(name: arg1).first
   r.should_not be_nil
-  visit url_for(:controller => :rb_releases, :action => :show, :format => :csv, :release_id => r.id, :only_path => true)
+  visit url_for(controller: :rb_releases, action: :show, format: :csv, release_id: r.id, only_path: true)
 end

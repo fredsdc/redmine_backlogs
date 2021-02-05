@@ -3,19 +3,19 @@
   A backlog is a visual representation of
   a sprint and its stories. It's is not a
   sprint. Imagine it this way: a sprint is
-  a start and end date, and a set of 
+  a start and end date, and a set of
   objectives. A backlog is something you
   would draw up on the board or a spread-
-  sheet (or in Redmine Backlogs!) to 
+  sheet (or in Redmine Backlogs!) to
   visualize the sprint.
 ******************************************/
 
 RB.Backlog = RB.Object.create({
-    
+
   initialize: function(el){
     var j;  // This ensures that we use a local 'j' variable, not a global one.
     var self = this;
-    
+
     this.$ = j = RB.$(el);
     this.el = el;
 
@@ -53,7 +53,7 @@ RB.Backlog = RB.Object.create({
     this.getStories().each(function(index){
       story = RB.Factory.initialize(RB.Story, this); // 'this' refers to an element with class="story"
     });
-    
+
     this.recalcVelocity();
   },
 
@@ -103,7 +103,7 @@ RB.Backlog = RB.Object.create({
       }
     };
 
-    
+
     RB.ajax({
       url: RB.routes.backlog_menu,
       data: ajaxdata,
@@ -134,9 +134,9 @@ RB.Backlog = RB.Object.create({
       }
     });
   },
-  
+
   dragComplete: function(event, ui) {
-    // jQuery triggers dragComplete of source and target. 
+    // jQuery triggers dragComplete of source and target.
     // Thus we have to check here. Otherwise, the story
     // would be saved twice.
     if(!ui.sender && ui.item.data('dragging')){
@@ -146,7 +146,7 @@ RB.Backlog = RB.Object.create({
     this.recalcVelocity();
     this.drawMenu();
   },
-  
+
   mouseDown: function(event) {
     var i;
     var item = RB.$(event.target).parents('.model');
@@ -187,15 +187,10 @@ RB.Backlog = RB.Object.create({
   },
 
   dragStart: function(event, ui) {
-    if (RB.$.support.noCloneEvent){
-      ui.item.addClass("dragging");
-    } else {
-      // for IE    
-      ui.item.draggable('enabled');
-    }
+    ui.item.addClass("dragging");
     ui.item.data('dragging', 'true');
   },
-  
+
   dragBeforeStop: function(event, ui){ //FIXME what does this function do?
     var dropTarget = ui.item.parents('.backlog').data('this');
 
@@ -215,16 +210,11 @@ RB.Backlog = RB.Object.create({
     ui.item.removeData('dragging');
   },
 
-  dragStop: function(event, ui) { 
-    if (RB.$.support.noCloneEvent){
-      ui.item.removeClass("dragging");
-    } else {
-      // for IE
-      ui.item.draggable('disable');
-    }
+  dragStop: function(event, ui) {
+    ui.item.removeClass("dragging");
     this.enableAllSortables();
   },
-  
+
   enableAllSortables: function() {
     // enable all backlogs as drop targets
     RB.$('.stories').sortable('enable');
@@ -234,11 +224,11 @@ RB.Backlog = RB.Object.create({
   getSprint: function(){
     return RB.$(this.el).find(".model.sprint").first();
   },
-    
+
   getRelease: function(){
     return RB.$(this.el).find(".model.release").first();
   },
-    
+
   getStories: function(){
     return this.getList().children(".story");
   },
@@ -270,18 +260,18 @@ RB.Backlog = RB.Object.create({
   isSprintBacklog: function(){
     return RB.$(this.el).find('.sprint').length == 1; // return true if backlog has an element with class="sprint"
   },
-    
+
   isReleaseBacklog: function(){
     return RB.$(this.el).find('.release').length == 1; // return true if backlog has an element with class="release"
   },
-    
+
   newStory: function(project_id) {
     var story = RB.$('#story_template').children().first().clone();
     if(project_id) {
       RB.$('#project_id_options').empty();
       RB.$('#project_id_options').append('<option value="'+project_id+'">'+project_id+'</option>');
     }
-    
+
     if (RB.constants.new_story_position == 'bottom') {
       this.getList().append(story);
     } else {
@@ -294,7 +284,7 @@ RB.Backlog = RB.Object.create({
         scrollTop: story.find('.editor').first().offset().top-100
         }, 200);
   },
-  
+
   newSprint: function(){
     var sprint_backlog = RB.$('#sprint_template').children().first().clone();
 
@@ -336,12 +326,12 @@ RB.Backlog = RB.Object.create({
     }
     RB.$('#charts').html( "<div class='loading'>Loading data...</div>");
     RB.$('#charts').load( RB.urlFor('show_burndown_embedded', { id: this.getSprint().data('this').getID() }) );
-    RB.$('#charts').dialog({ 
+    RB.$('#charts').dialog({
                           buttons: { "Close": function() { RB.$('#charts').dialog("close"); } },
                           height: 590,
-                          modal: true, 
-                          title: 'Charts', 
-                          width: 710 
+                          modal: true,
+                          title: 'Charts',
+                          width: 710
                        });
   }
 });

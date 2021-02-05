@@ -9,15 +9,15 @@ module Backlogs
       base.class_eval do
         unloadable
 
-        belongs_to :release, :class_name => 'RbRelease', :foreign_key => 'release_id'
+        belongs_to :release, class_name: 'RbRelease', foreign_key: 'release_id'
 
-        acts_as_list_with_gaps :default => (Backlogs.setting[:new_story_position] == 'bottom' ? 'bottom' : 'top')
+        acts_as_list_with_gaps default: (Backlogs.setting[:new_story_position] == 'bottom' ? 'bottom' : 'top')
 
-        has_one :backlogs_history, :class_name => 'RbIssueHistory', :dependent => :destroy
-        has_many :rb_release_burnchart_day_cache, :dependent => :delete_all
+        has_one :backlogs_history, class_name: 'RbIssueHistory', dependent: :destroy
+        has_many :rb_release_burnchart_day_cache, dependent: :delete_all
 
 
-        validates_inclusion_of :release_relationship, :in => RbStory::RELEASE_RELATIONSHIP
+        validates_inclusion_of :release_relationship, in: RbStory::RELEASE_RELATIONSHIP
 
         safe_attributes 'release_id','release_relationship' #FIXME merge conflict. is this required?
 
@@ -33,11 +33,11 @@ module Backlogs
 
     module InstanceMethods
       def history
-        @history ||= RbIssueHistory.where(:issue_id => self.id).first_or_initialize
+        @history ||= RbIssueHistory.where(issue_id: self.id).first_or_initialize
       end
 
       def release_burnchart_day_caches(release_id)
-        RbReleaseBurnchartDayCache.where(:issue_id => self.id, :release_id => release_id)
+        RbReleaseBurnchartDayCache.where(issue_id: self.id, release_id: release_id)
       end
 
       def is_story?
@@ -207,9 +207,9 @@ module Backlogs
         write_attribute(:release_id, rid)
       end
 #      def self.by_version(project)
-#        count_and_group_by(:project => project,
-#                           :field => 'release_id',
-#                           :joins => RbRelease.table_name)
+#        count_and_group_by(project: project,
+#                           field: 'release_id',
+#                           joins: RbRelease.table_name)
 #      end
 
 

@@ -62,25 +62,30 @@ module Backlogs
         else
           backlogs_filters = {
             # mother of *&@&^*@^*#.... order "20" is a magical constant in RM2.2 which means "I'm a custom field". What. The. Fuck.
-            "backlogs_issue_type" => {  :type => :list,
-                                        :name => l(:field_backlogs_issue_type),
-                                        :values => [[l(:backlogs_story), "story"], [l(:backlogs_task), "task"], [l(:backlogs_impediment), "impediment"], [l(:backlogs_any), "any"]],
-                                        :order => 21 },
-            "story_points" => { :type => :float,
-                                :name => l(:field_story_points),
-                                :order => 22 }
+            "backlogs_issue_type" => {  type: :list,
+                                        name: l(:field_backlogs_issue_type),
+                                        values: [[l(:backlogs_story), "story"], [l(:backlogs_task), "task"], [l(:backlogs_impediment), "impediment"], [l(:backlogs_any), "any"]],
+                                        order: 21 },
+            "story_points" => { type: :float,
+                                name: l(:field_story_points),
+                                order: 22 }
                              }
         end
 
         if project
           backlogs_filters["release_id"] = {
-            :type => :list_optional,
-            :name => l(:field_release),
-            :values => RbRelease.where(project_id: project).order('name ASC').collect { |d| [d.name, d.id.to_s]},
-            :order => 21
+            type: :list_optional,
+            name: l(:field_release),
+            values: RbRelease.where(project_id: project).order('name ASC').collect { |d| [d.name, d.id.to_s]},
+            order: 21
           }
         end
-        @available_filters = @available_filters.merge(backlogs_filters)
+
+        backlogs_filters.each do |field, filter|
+          options = {type: filter[:type], name: filter[:name], values: filter[:values]}
+          add_available_filter(field, options)
+        end
+        @available_filters
       end
 
       def available_columns_with_backlogs_issue_type
@@ -89,11 +94,11 @@ module Backlogs
 
         @backlog_columns_included = true
 
-        @available_columns << QueryColumn.new(:story_points, :sortable => "#{Issue.table_name}.story_points")
+        @available_columns << QueryColumn.new(:story_points, sortable: "#{Issue.table_name}.story_points")
         @available_columns << QueryColumn.new(:velocity_based_estimate)
-        @available_columns << QueryColumn.new(:position, :sortable => "#{Issue.table_name}.position")
-        @available_columns << QueryColumn.new(:remaining_hours, :sortable => "#{Issue.table_name}.remaining_hours")
-        @available_columns << QueryColumn.new(:release, :sortable => "#{RbRelease.table_name}.name", :groupable => true)
+        @available_columns << QueryColumn.new(:position, sortable: "#{Issue.table_name}.position")
+        @available_columns << QueryColumn.new(:remaining_hours, sortable: "#{Issue.table_name}.remaining_hours")
+        @available_columns << QueryColumn.new(:release, sortable: "#{RbRelease.table_name}.name", groupable: true)
         @available_columns << QueryColumn.new(:backlogs_issue_type)
       end
 

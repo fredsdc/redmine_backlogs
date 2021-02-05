@@ -37,11 +37,11 @@ class RbStackedData
   # object: Associated object for identification.
   # create_estimate: Choose whether to create trendline or not.
   # Typically enabled if series contain open stories.
-  def add(arrays,object,create_estimate = false)
+  def add(arrays, object, create_estimate = false)
     if @total_data.size == 0
-      add_first(arrays,object,create_estimate)
+      add_first(arrays, object, create_estimate)
     else
-      stack_total(arrays,object,create_estimate)
+      stack_total(arrays, object, create_estimate)
       merge_closed(arrays)
     end
   end
@@ -71,9 +71,9 @@ private
     idx_bottom = ((@total_data.size() -2)..0).to_a
 
     # Ripple missing days down through the series
-    _ripple_overlapping_days(idx_top,idx_bottom);
+    _ripple_overlapping_days(idx_top, idx_bottom);
     # Ripple missing days up through the series
-    _ripple_overlapping_days(idx_bottom,idx_top);
+    _ripple_overlapping_days(idx_bottom, idx_top);
   end
 
 
@@ -91,8 +91,8 @@ private
   end
 
   # Used when adding first stacked series
-  def add_first(arrays,object,create_estimate)
-    @total_data << {:days => arrays[:days], :total_points => arrays[:total_points], :object => object}
+  def add_first(arrays, object, create_estimate)
+    @total_data << {days: arrays[:days], total_points: arrays[:total_points], object: object}
     # Need to duplicate array of days. Otherwise ruby references falsely.
     days_within_limit = arrays[:days].select{|day| day <= @closed_day_limit}
     return if days_within_limit.size() == 0
@@ -101,11 +101,11 @@ private
 
     if create_estimate
       est_total = _linear_regression(@total_data[-1][:days],@total_data[-1][:total_points],ESTIMATE_POINTS)
-      @total_estimates[object] = {:trendline => est_total}
+      @total_estimates[object] = {trendline: est_total}
     end
   end
 
-  def stack_total(arrays,object,create_estimate)
+  def stack_total(arrays, object, create_estimate)
     # Have last stacked series ready when stacking the next
     last = @total_data.last
 
@@ -134,11 +134,11 @@ private
       end
     }
     # Add the new stacked total series
-    @total_data << {:days => arrays[:days], :total_points => tmp_total, :object => object}
+    @total_data << {days: arrays[:days], total_points: tmp_total, object: object}
 
     if create_estimate
       est_total = _linear_regression(@total_data[-1][:days],@total_data[-1][:total_points],ESTIMATE_POINTS)
-      @total_estimates[object] = {:trendline => est_total }
+      @total_estimates[object] = {trendline: est_total }
     end
   end
 
@@ -155,7 +155,7 @@ private
     _merge_closed_old(arrays,old_days)
   end
 
-  # Merge all new days into @closed_data (sorted) 
+  # Merge all new days into @closed_data (sorted)
   def _merge_closed_new(arrays,new_days)
     # Need to get a copy of days and closed points before starting to insert
     # days. Otherwise we will mixup data.
@@ -195,7 +195,7 @@ private
   end
 
   # Days represented only in the previous closed series.
-  # Update with data from new days 
+  # Update with data from new days
   def _merge_closed_old(arrays, old_days)
     old_days.each{|day|
       day_for_merge = arrays[:days].select{|x| x < day}.last
@@ -207,7 +207,7 @@ private
     }
   end
 
-  def _ripple_overlapping_days(idx_orig_arr,idx_next_arr)
+  def _ripple_overlapping_days(idx_orig_arr, idx_next_arr)
 
     # Ripple missing days down the stacked totals
     idx_orig_arr.each_with_index{|orig_idx,i|
@@ -231,7 +231,7 @@ private
   end
 
   # Helper function for creating a linear regression on a dataset limited to a certain number of data points.
-  def _linear_regression(days,points,limited_points)
+  def _linear_regression(days, points, limited_points)
     limit = days.size() < limited_points ? days.size() : limited_points
     Backlogs::LinearRegression.new(days[-limit,limit],points[-limit,limit])
   end

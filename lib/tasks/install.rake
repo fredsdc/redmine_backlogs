@@ -5,7 +5,7 @@ namespace :redmine do
   namespace :backlogs do
 
     desc "Install and configure Redmine Backlogs"
-    task :install => :environment do |t|
+    task install: :environment do |t|
       raise "You must specify the RAILS_ENV ('rake redmine:backlogs:install RAILS_ENV=production' or 'rake redmine:backlogs:install RAILS_ENV=development')" unless ENV["RAILS_ENV"]
 
       raise "You must set the default issue priority in redmine prior to installing backlogs" unless IssuePriority.default
@@ -42,7 +42,7 @@ namespace :redmine do
         end
       end
 
-      if BacklogsPrintableCards::CardPageLayout.selected.blank? && BacklogsPrintableCards::CardPageLayout.available.size > 0 
+      if BacklogsPrintableCards::CardPageLayout.selected.blank? && BacklogsPrintableCards::CardPageLayout.available.size > 0
         Backlogs.setting[:card_spec] = BacklogsPrintableCards::CardPageLayout.available[0]
       end
 
@@ -51,10 +51,9 @@ namespace :redmine do
       if ENV['story_trackers'] && ENV['story_trackers'] != ''
         trackers =  ENV['story_trackers'].split(',')
         trackers.each{|name|
-          if ! Tracker.where(name: name).first
+          if ! Tracker.where(["name=?", name]).first
             puts "Creating story tracker '#{name}'"
-            default_status = IssueStatus.where(name: 'New').first
-            tracker = Tracker.new(:name => name, :default_status => default_status)
+            tracker = Tracker.new(name: name)
             tracker.save!
           end
         }
@@ -99,10 +98,9 @@ namespace :redmine do
       end
 
       if ENV['task_tracker'] && ENV['task_tracker'] != ''
-        if ! Tracker.where(name: ENV['task_tracker']).first
+        if ! Tracker.where(["name=?", ENV['task_tracker']]).first
           puts "Creating task tracker '#{ENV['task_tracker']}'"
-          default_status = IssueStatus.where(name: 'New').first
-          tracker = Tracker.new(:name => ENV['task_tracker'], :default_status => default_status)
+          tracker = Tracker.new(name: ENV['task_tracker'])
           tracker.save!
         end
         Backlogs.setting[:task_tracker] = Tracker.where(name: ENV['task_tracker']).first.id
@@ -181,7 +179,7 @@ namespace :redmine do
         print "Please type the tracker's name: "
         STDOUT.flush
         name = STDIN.gets.chomp!
-        if Tracker.where(name: name).first
+        if Tracker.where("name='#{name}'").first
           puts "Ooops! That name is already taken."
           next
         end
@@ -189,8 +187,7 @@ namespace :redmine do
         STDOUT.flush
 
         if (STDIN.gets.chomp!).match("y")
-          default_status = IssueStatus.where(name: 'New').first
-          tracker = Tracker.new(:name => name, :default_status => default_status)
+          tracker = Tracker.new(name: name)
           tracker.save!
           repeat = false
         end

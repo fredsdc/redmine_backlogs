@@ -39,10 +39,10 @@ module BacklogsSpreadsheet
 
       if options[:font] && options[:font].size > 0
         @font = {
-          'ss:FontName' => options[:font][:name] || 'Calibri',
-          'x:Family' => options[:font][:name] || 'Swiss',
-          'ss:Size' => options[:font][:size] || 11,
-          'ss:Color' => options[:font][:color] || '#000000',
+          'ssFontName': options[:font][:name] || 'Calibri',
+          'xFamily': options[:font][:name] || 'Swiss',
+          'ssSize': options[:font][:size] || 11,
+          'ssColor': options[:font][:color] || '#000000',
         }
         @font['ss:Bold'] = '1' if options[:font][:bold]
         @font['ss:Italic'] = '1' if options[:font][:italic]
@@ -58,7 +58,7 @@ module BacklogsSpreadsheet
     end
 
     def to_xml(xml)
-      xml.Style('ss:ID' => @id) {
+      xml.Style('ssID': @id) {
         xml.Font(@font) if @font
         xml.NumberFormat(@numberformat) if @numberformat
       }
@@ -84,10 +84,10 @@ module BacklogsSpreadsheet
     attr_accessor :comment
 
     def to_xml(xml, col)
-      cellopts = {'ss:Index' => (col+1).to_s}
+      cellopts = {'ssIndex': (col+1).to_s}
       cellopts['ss:StyleID'] = @style.id if @style
       xml.Cell(cellopts) {
-        xml.Data(self.to_s, 'ss:Type' => celltype)
+        xml.Data(self.to_s, 'ssType': celltype)
         if @comment
           xml.Comment {
             xml.send(:"ss:Data", @comment, 'xmlns' => "http://www.w3.org/TR/REC-html40") {
@@ -127,8 +127,8 @@ module BacklogsSpreadsheet
     end
 
     def default_style
-      return {:numberformat => {'ss:Format' => 'Short Date'}} if self.hour == 0 && self.min == 0 && self.sec == 0
-      return {:numberformat => {'ss:Format' => 'General Date'}}
+      return {numberformat: {'ssFormat': 'Short Date'}} if self.hour == 0 && self.min == 0 && self.sec == 0
+      return {numberformat: {'ssFormat': 'General Date'}}
     end
   end
 
@@ -228,10 +228,10 @@ module BacklogsSpreadsheet
 
     def to_xml(xml)
       rows, cols = *dimensions
-      xml.Worksheet('ss:Name' => @name) {
-        xml.Table('ss:ExpandedColumnCount' => cols.to_s, 'ss:ExpandedRowCount' => rows.to_s, 'x:FullColumns' => "1", 'x:FullRows' => "1") {
+      xml.Worksheet('ssName': @name) {
+        xml.Table('ssExpandedColumnCount': cols.to_s, 'ssExpandedRowCount': rows.to_s, 'xFullColumns': "1", 'xFullRows': "1") {
           @cells.keys.sort.each {|row|
-            xml.Row('ss:Index' => (row+1).to_s) {
+            xml.Row('ssIndex': (row+1).to_s) {
               @cells[row].keys.sort.each {|col|
                 @cells[row][col].to_xml(xml, col)
               }
@@ -307,7 +307,7 @@ module BacklogsSpreadsheet
             end
 
             c = cell.at('Comment//Data')
-            v = {:value => v, :comment => c.text} if c
+            v = {value: v, comment: c.text} if c
 
             _ws[rownum, colnum] = v
           }
@@ -320,10 +320,10 @@ module BacklogsSpreadsheet
     def to_xml
       builder = Nokogiri::XML::Builder.new do |xml|
         xml.Workbook('xmlns' => "urn:schemas-microsoft-com:office:spreadsheet",
-                     'xmlns:o' => "urn:schemas-microsoft-com:office:office",
-                     'xmlns:x' => "urn:schemas-microsoft-com:office:excel",
-                     'xmlns:ss' => "urn:schemas-microsoft-com:office:spreadsheet",
-                     'xmlns:html' => "http://www.w3.org/TR/REC-html40") {
+                     'xmlnso': "urn:schemas-microsoft-com:office:office",
+                     'xmlnsx': "urn:schemas-microsoft-com:office:excel",
+                     'xmlnsss': "urn:schemas-microsoft-com:office:spreadsheet",
+                     'xmlnshtml': "http://www.w3.org/TR/REC-html40") {
           xml.ExcelWorkbook('xmlns' => "urn:schemas-microsoft-com:office:excel")
           @stylemanager.to_xml(xml)
           @worksheets.each{ |w| w.to_xml(xml) }

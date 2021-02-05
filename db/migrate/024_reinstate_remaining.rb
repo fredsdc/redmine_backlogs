@@ -20,20 +20,20 @@ class ReinstateRemaining < ActiveRecord::Migration[5.2]
   def self.up
     unless ActiveRecord::Base.connection.table_exists?('rb_issue_history')
       create_table :rb_issue_history do |t|
-        t.column :issue_id,    :integer, :default => 0,  :null => false
+        t.column :issue_id,    :integer, default: 0,  null: false
         t.text   :history
       end
-      add_index :rb_issue_history, :issue_id, :unique => true
+      add_index :rb_issue_history, :issue_id, unique: true
     end
 
     unless ActiveRecord::Base.connection.table_exists?('rb_sprint_burndown')
       create_table :rb_sprint_burndown do |t|
-        t.column :version_id,    :integer, :default => 0,  :null => false
+        t.column :version_id,    :integer, default: 0,  null: false
         t.text   :stories
         t.text   :burndown
         t.timestamps
       end
-      add_index :rb_sprint_burndown, :version_id, :unique => true
+      add_index :rb_sprint_burndown, :version_id, unique: true
     end
 
     catch (:done) do
@@ -86,9 +86,9 @@ class ReinstateRemaining < ActiveRecord::Migration[5.2]
 
       # stupid mysql doesn't support self-referential subselect updates
       create_table :backlogs_tmp_estimated_hours do |t|
-        t.column :id, :integer, :null => false
-        t.column :estimated_hours, :float, :null => false
-        t.column :remaining_hours, :float, :null => false
+        t.column :id, :integer, null: false
+        t.column :estimated_hours, :float, null: false
+        t.column :remaining_hours, :float, null: false
       end
 
       # sum up all leaf issues

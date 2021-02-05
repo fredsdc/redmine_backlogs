@@ -11,11 +11,11 @@
     end
   end
   rb_pr_form_for @project,
-                   :as => :rb_project_settings,
-                   :url => { :controller => 'rb_project_settings',
-                             :action => 'project_settings', :project_id => @project },
-                   :html => {:id => 'backlogs-form',
-                             :method => :post} do |f| %>
+                   as: :rb_project_settings,
+                   url: { controller: 'rb_project_settings',
+                             action: 'project_settings', project_id: @project },
+                   html: {id: 'backlogs-form',
+                             method: :post} do |f| %>
 
 <%= error_messages_for 'rb_project_settings' %>
 

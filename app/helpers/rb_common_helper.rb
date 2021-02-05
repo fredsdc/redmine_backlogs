@@ -48,13 +48,13 @@ filter:progid:DXImageTransform.Microsoft.Gradient(Enabled=1,GradientType=0,Start
   def issue_link_or_empty(item)
     item_id = item.id.to_s
     text = (item_id.length > 8 ? "#{item_id[0..1]}...#{item_id[-4..-1]}" : item_id)
-    item.new_record? ? "" : link_to(text, {:controller => "issues", :action => "show", :id => item}, {:target => "_blank", :class => "prevent_edit"})
+    item.new_record? ? "" : link_to(text, {controller: "issues", action: "show", id: item}, {target: "_blank", class: "prevent_edit"})
   end
 
   def sprint_link_or_empty(item)
     item_id = item.id.to_s
     text = (item_id.length > 8 ? "#{item_id[0..1]}...#{item_id[-4..-1]}" : item_id)
-    item.new_record? ? "" : link_to(text, {:controller => 'versions', :action => "show", :id => item}, {:target => "_blank", :class => "prevent_edit"})
+    item.new_record? ? "" : link_to(text, {controller: 'versions', action: "show", id: item}, {target: "_blank", class: "prevent_edit"})
   end
 
   def release_display_name(release)
@@ -62,11 +62,11 @@ filter:progid:DXImageTransform.Microsoft.Gradient(Enabled=1,GradientType=0,Start
   end
 
   def release_link_or_empty(release)
-    release.new_record? ? "" : link_to(release_display_name(release), {:controller => "rb_releases", :action => "show", :release_id => release})
+    release.new_record? ? "" : link_to(release_display_name(release), {controller: "rb_releases", action: "show", release_id: release})
   end
 
   def release_multiview_link_or_empty(release)
-    release.new_record? ? "" : link_to(release_display_name(release), {:controller => "rb_releases_multiview", :action => "show", :release_multiview_id => release})
+    release.new_record? ? "" : link_to(release_display_name(release), {controller: "rb_releases_multiview", action: "show", release_multiview_id: release})
   end
 
   def mark_if_closed(story)
@@ -184,7 +184,7 @@ filter:progid:DXImageTransform.Microsoft.Gradient(Enabled=1,GradientType=0,Start
     # below to make (German) Excel happy
     #decimal_separator = l(:general_csv_decimal_separator)
 
-    export = FCSV.generate(:col_sep => ';') do |csv|
+    export = FCSV.generate(col_sep: ';') do |csv|
       # csv header fields
       headers = [ l(:label_points_backlog),
                   l(:label_points_added),
@@ -207,12 +207,8 @@ filter:progid:DXImageTransform.Microsoft.Gradient(Enabled=1,GradientType=0,Start
   end
 
   def self.find_backlogs_enabled_active_projects
-    #projects =
-    EnabledModule.where(name: 'backlogs')
-                  .includes(:project)
-                  .joins(:project).where(projects: {status: Project::STATUS_ACTIVE})
-                  .collect { |mod| mod.project}
-  end
+    projects = EnabledModule.includes(:project).where("enabled_modules.name = 'backlogs' and status = ?", Project::STATUS_ACTIVE).joins(:project).collect{ |mod| mod.project }
+   end
 
   # Returns a collection of users allowed to log time for the current project. (see app/views/rb_taskboards/show.html.erb for usage)
   def users_allowed_to_log_on_task

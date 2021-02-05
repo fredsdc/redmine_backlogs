@@ -40,7 +40,7 @@ class RbApplicationController < ApplicationController
     if s1[:story_trackers].blank? || s1[:task_tracker].blank?
       puts("check_if_plugin_is_configured: something is blank, halting. #{s1}")
       respond_to do |format|
-        format.html { render :template => "backlogs/not_configured",  :handlers => [:erb], :formats => [:html] }
+        format.html { render file: "backlogs/not_configured" }
         format.js { }
       end
     end

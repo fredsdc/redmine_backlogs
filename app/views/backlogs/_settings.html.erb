@@ -64,7 +64,7 @@
     <table>
       <tr><th colspan="2">Trackers</th></tr>
       <% Backlogs.trackers.each_pair do |tracker, ok| %>
-        <tr><td><%= {:story => 'Story trackers', :task => 'Task tracker', :default_priority => 'Default issue priority'}[tracker] %></td><td class="<%= ok ? 'ok' : 'error' %>"><%= ok ? 'ok' : 'not configured' %></td></tr>
+        <tr><td><%= {story: 'Story trackers', task: 'Task tracker', default_priority: 'Default issue priority'}[tracker] %></td><td class="<%= ok ? 'ok' : 'error' %>"><%= ok ? 'ok' : 'not configured' %></td></tr>
       <% end %>
     </table>
   </fieldset>
@@ -73,7 +73,7 @@
   <legend><%= l(:backlogs_general_settings) %></legend>
 <p>
   <%= content_tag(:label, l(:backlogs_story_tracker)) %>
-  <%= select_tag("settings[story_trackers]", options_from_collection_for_select(Tracker.all, :id, :name, RbStory.trackers), :multiple => true) %>
+  <%= select_tag("settings[story_trackers]", options_from_collection_for_select(Tracker.all, :id, :name, RbStory.trackers), multiple: true) %>
   <br />
   <%= content_tag(:label, l(:backlogs_default_story_tracker)) %>
   <%= select_tag("settings[default_story_tracker]", options_from_collection_for_select(Tracker.all, :id, :name, Backlogs.setting[:default_story_tracker])) %>
@@ -228,9 +228,9 @@
         time_zone_options_for_select(RbIssueHistory.burndown_timezone(true).name, nil)
       ) %>
   <span style="display:block;margin-left:12px"><%= l(:rb_burndown_timezone_explanation, {
-    :user_timezone => User.current.time_zone,
-    :server_timezone => ActiveSupport::TimeZone["Etc/GMT-#{Time.now.utc_offset/3600}"],
-    :burndown_timezone => RbIssueHistory.burndown_timezone }).gsub("\n","<br/>").html_safe %></span>
+    user_timezone: User.current.time_zone,
+    server_timezone: ActiveSupport::TimeZone["Etc/GMT-#{Time.now.utc_offset/3600}"],
+    burndown_timezone: RbIssueHistory.burndown_timezone }).gsub("\n","<br/>").html_safe %></span>
 </p>
 
 <p>

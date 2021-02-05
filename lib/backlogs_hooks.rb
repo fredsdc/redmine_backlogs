@@ -58,9 +58,9 @@ module BacklogsPlugin
 
           url_options = {
             :only_path  => true,
-            :controller => :rb_hooks_render,
+            controller: :rb_hooks_render,
             :action     => :view_issues_sidebar,
-            :project_id => project.identifier
+            project_id: project.identifier
           }
           url_options[:sprint_id] = sprint_id if sprint_id
           url = url_for_prefix_in_hooks
@@ -106,7 +106,7 @@ module BacklogsPlugin
             unless issue.release_id.nil?
               release = RbRelease.find(issue.release_id)
               snippet += "<div class='release attribute'><div class='label'><span>#{l(:field_release)}</span>:</div>"
-              snippet += "<div class='value'>#{link_to(release.name, url_for_prefix_in_hooks + url_for({:controller => 'rb_releases', :action => 'show', :release_id => release}))}</div></div>"
+              snippet += "<div class='value'>#{link_to(release.name, url_for_prefix_in_hooks + url_for({controller: 'rb_releases', action: 'show', release_id: release}))}</div></div>"
 
               relation_translate = l("label_release_relationship_#{RbStory.find(issue.id).release_relationship}")
               snippet += "<div class='release-relationship attribute'><div class='label'><span>#{l(:field_release_relationship)}</span>:</div>"
@@ -144,7 +144,7 @@ module BacklogsPlugin
             snippet += '<p>'
             #snippet += context[:form].label(:story_points)
             if Backlogs.setting[:story_points].blank?
-              snippet += context[:form].text_field(:story_points, :size => 3)
+              snippet += context[:form].text_field(:story_points, size: 3)
             else
               snippet += context[:form].select(:story_points, options_for_select(Backlogs.setting[:story_points].split(',').map(&:to_f), issue.story_points.try(:to_f).try(:to_s)), include_blank: true)
             end
@@ -152,7 +152,7 @@ module BacklogsPlugin
 
             if issue.safe_attribute?('release_id') && issue.assignable_releases.any?
               snippet += '<div class="splitcontentleft"><p>'
-              snippet += context[:form].select :release_id, release_options_for_select(issue.assignable_releases, issue.release), :include_blank => true
+              snippet += context[:form].select :release_id, release_options_for_select(issue.assignable_releases, issue.release), include_blank: true
               snippet += '</p></div>'
               snippet += '<div class="splitcontentright"><p>'
               snippet += context[:form].select :release_relationship, RbStory::RELEASE_RELATIONSHIP.collect{|v|
@@ -190,7 +190,7 @@ module BacklogsPlugin
 
           if issue.is_task? && !issue.new_record?
             snippet += "<p><label for='remaining_hours'>#{l(:field_remaining_hours)}</label>"
-            snippet += text_field_tag('remaining_hours', issue.remaining_hours, :size => 3)
+            snippet += text_field_tag('remaining_hours', issue.remaining_hours, size: 3)
             snippet += '</p>'
           end
 
@@ -218,8 +218,8 @@ module BacklogsPlugin
         snippet = ''
         snippet += "<p>
           <label for='issue_release_id'>#{ l(:field_release)}</label>
-          #{ select_tag('issue[release_id]', content_tag('option', l(:label_no_change_option), :value => '') +
-                                   content_tag('option', l(:label_none), :value => 'none') +
+          #{ select_tag('issue[release_id]', content_tag('option', l(:label_no_change_option), value: '') +
+                                   content_tag('option', l(:label_none), value: 'none') +
                                    release_options_for_select(releases)) }
           </p>"
         snippet += "<p>
@@ -247,18 +247,18 @@ module BacklogsPlugin
           releases.each do |s|
               snippet += '<li>' +
                 context_menu_link(s.name,
-                                  url_for_prefix_in_hooks + bulk_update_issues_path(:ids => issues, :issue => {:release_id => s}, :back_url => context[:back]),
-                                  :method => :post,
-                                  :selected => (issue && s == issue.release),
-                                  :disabled => !context[:can][:edit])+
+                                  url_for_prefix_in_hooks + bulk_update_issues_path(ids: issues, issue: {release_id: s}, back_url: context[:back]),
+                                  method: :post,
+                                  selected: (issue && s == issue.release),
+                                  disabled: !context[:can][:edit])+
               '</li>'
           end
           snippet += '<li>' +
                 context_menu_link(l(:label_none),
-                                  url_for_prefix_in_hooks + bulk_update_issues_path(:ids => issues, :issue => {:release_id => 'none'}, :back_url => context[:back]),
-                                  :method => :post,
-                                  :selected => (issue && issue.release.nil?),
-                                  :disabled => !context[:can][:edit])+
+                                  url_for_prefix_in_hooks + bulk_update_issues_path(ids: issues, issue: {release_id: 'none'}, back_url: context[:back]),
+                                  method: :post,
+                                  selected: (issue && issue.release.nil?),
+                                  disabled: !context[:can][:edit])+
             '</li>'
           snippet += '
               </ul>
@@ -281,8 +281,8 @@ module BacklogsPlugin
           if User.current.allowed_to?(:edit_wiki_pages, project)
             snippet += '<span id="edit_wiki_page_action">'
             snippet += link_to l(:button_edit_wiki),
-                      url_for_prefix_in_hooks + url_for({:controller => 'rb_wikis', :action => 'edit', :sprint_id => version.id }),
-                      :class => 'icon icon-edit'
+                      url_for_prefix_in_hooks + url_for({controller: 'rb_wikis', action: 'edit', sprint_id: version.id }),
+                      class: 'icon icon-edit'
             snippet += '</span>'
 
             # this wouldn't be necesary if the schedules plugin
@@ -313,7 +313,7 @@ module BacklogsPlugin
             <h3>#{l(:label_backlogs)}</h3>
             <p>
               #{label :backlogs, l(:field_task_color)}
-              #{text_field :backlogs, :task_color, :value => context[:user].backlogs_preference[:task_color]}
+              #{text_field :backlogs, :task_color, value: context[:user].backlogs_preference[:task_color]}
             </p>
           }
         rescue => e
@@ -386,12 +386,12 @@ module BacklogsPlugin
         if User.current.admin? && !context[:request].session[:backlogs_configured]
           context[:request].session[:backlogs] = Backlogs.configured?
           unless context[:request].session[:backlogs]
-            context[:controller].send(:flash)[:error] = l(:label_backlogs_unconfigured, {:administration => l(:label_administration), :plugins => l(:label_plugins), :configure => l(:button_configure)})
+            context[:controller].send(:flash)[:error] = l(:label_backlogs_unconfigured, {administration: l(:label_administration), plugins: l(:label_plugins), configure: l(:button_configure)})
           end
         end
 
         return context[:controller].send(:render_to_string, {
-          :locals => context,
+          locals: context,
           :partial=> 'hooks/rb_include_scripts'})
       end
 
@@ -408,7 +408,7 @@ module BacklogsPlugin
           if issue.is_task? && User.current.allowed_to?(:update_remaining_hours, time_entry.project) != nil
             remaining_hours = issue.remaining_hours
             snippet += "<p><label for='remaining_hours'>#{l(:field_remaining_hours)}</label>"
-            snippet += text_field_tag('remaining_hours', remaining_hours, :size => 6)
+            snippet += text_field_tag('remaining_hours', remaining_hours, size: 6)
             snippet += '</p>'
           end
           return snippet

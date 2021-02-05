@@ -1,6 +1,7 @@
 <html><head>
   <title><%= h @sprint.name %></title>
-  <%= call_hook :view_layouts_base_html_head %>
+   <%= javascript_heads %>
+   <%= call_hook :view_layouts_base_html_head %>
 </head><body>
 <% if @sprint.has_burndown? %>
   <%= render :partial => 'burndown', :locals => {:sprint => @sprint, :mode => :full, :style => "width: #{@width}px; height: #{@height}px" } %>

@@ -2,7 +2,7 @@
  * reserved classes are
  * .backlog (used in master_backlog.js to initialize all backlogs)
  * .model (used in backlog.js editable_inplace.js model.js)
- * .sprint (used in backlog.js
+ * .sprint (used in backlog.js)
  * .stories (used in backlog.js for sortable)
  * .editor
  * .editable (bind click on)

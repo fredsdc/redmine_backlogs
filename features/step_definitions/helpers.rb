@@ -139,7 +139,7 @@ def story_after(rank, project, sprint=nil)
 
   rank = rank.to_i if rank.is_a?(String) && rank =~ /^[0-9]+$/
 
-  nxt = RbStory.backlog_scope(:project => project, :sprint => sprint).find_by_rank(rank)
+  nxt = RbStory.backlog_scope(project: project, sprint: sprint).find_by_rank(rank)
   return nil if nxt.nil?
 
   return nxt.id
@@ -202,11 +202,11 @@ end
 
 def login_as(user, password)
   logout
-  visit url_for(:controller => 'account', :action=>'login', :only_path=>true)
-  fill_in 'username', :with => user
-  fill_in 'password', :with => password
+  visit url_for(controller: 'account', :action=>'login', :only_path=>true)
+  fill_in 'username', with: user
+  fill_in 'password', with: password
   page.find(:xpath, '//input[@name="login"]').click
-  @user = User.find_by(:login => user)
+  @user = User.find_by(login: user)
   User.current = @user
   @sessiondriver = Capybara.current_session.driver
 end
@@ -231,7 +231,7 @@ def login_as_admin
 end
 
 def setup_permissions(typ)
-  role = Role.find_by(:name =>'Manager')
+  role = Role.find_by(name:'Manager')
   if typ == 'scrum master'
     role.permissions << :view_master_backlog
     role.permissions << :view_releases
@@ -262,7 +262,7 @@ def setup_permissions(typ)
   role.save!
   
   @projects.each{|project|
-    m = Member.new(:user => @user, :roles => [role])
+    m = Member.new(user: @user, roles: [role])
     project.members << m
   }
 end
@@ -279,7 +279,7 @@ def story_position(story)
   p2 = story.rank
   p1.should == p2
 
-  s2 = RbStory.backlog_scope(:project => @project, :sprint => current_sprint).find_by_rank(p1)
+  s2 = RbStory.backlog_scope(project: @project, sprint: current_sprint).find_by_rank(p1)
   s2.should_not be_nil
   s2.id.should == story.id
 
@@ -287,7 +287,7 @@ def story_position(story)
 end
 
 def logout
-  path = url_for(:controller => 'account', :action=>'logout', :only_path=>true)
+  path = url_for(controller: 'account', :action=>'logout', :only_path=>true)
   if @sessiondriver
       @sessiondriver.submit :post, path, @task_params
   elsif page.driver.respond_to?(:post)
@@ -338,11 +338,11 @@ When /^(?:|I )select multiple "([^"]*)" from "([^"]*)"(?: within "([^"]*)")?$/ d
   with_scope(selector) do
     # clear all options
     options.each{|v|
-      unselect(v, :from => field)
+      unselect(v, from: field)
     }
     # Select the requested options
     value.split(",").each{|v|
-      select(v, :from => field)
+      select(v, from: field)
     }
   end
 end

@@ -17,7 +17,7 @@ class RbStory < Issue
     options[:conditions] ||= []
     if permission
       if Issue.respond_to? :visible_condition
-        visible = Issue.visible_condition(User.current, :project => project || Project.find(project_id))
+        visible = Issue.visible_condition(User.current, project: project || Project.find(project_id))
       else
         visible = Project.allowed_to_condition(User.current, :view_issues)
       end
@@ -106,9 +106,9 @@ class RbStory < Issue
 
   def list_with_gaps_options
     {
-      :project => self.project_id,
-      :sprint => self.fixed_version_id,
-      :release => self.release_id
+      project: self.project_id,
+      sprint: self.fixed_version_id,
+      release: self.release_id
     }
   end
 
@@ -128,14 +128,14 @@ class RbStory < Issue
       order("#{self.table_name}.position").
       backlog_scope(
         options.merge({
-          :project => project_id,
-          :sprint => sprint_id,
-          :release => release_id
+          project: project_id,
+          sprint: sprint_id,
+          release: release_id
       }))
   end
 
   def self.product_backlog(project, limit=nil)
-    return RbStory.backlog(project.id, nil, nil, :limit => limit)
+    return RbStory.backlog(project.id, nil, nil, limit: limit)
   end
 
   def self.sprint_backlog(sprint, options={})
@@ -150,8 +150,8 @@ class RbStory < Issue
     #make separate queries for each sprint to get higher/lower item right
     return [] unless sprints
     sprints.map do |s|
-      { :sprint => s,
-        :stories => RbStory.backlog(project.id, s.id, nil, options)
+      { sprint: s,
+        stories: RbStory.backlog(project.id, s.id, nil, options)
       }
     end
   end
@@ -160,8 +160,8 @@ class RbStory < Issue
     #make separate queries for each release to get higher/lower item right
     return [] unless releases
     releases.map do |r|
-      { :release => r,
-        :stories => RbStory.backlog(project.id, nil, r.id, options)
+      { release: r,
+        stories: RbStory.backlog(project.id, nil, r.id, options)
       }
     end
   end
@@ -194,17 +194,17 @@ class RbStory < Issue
     sprints = project.open_shared_sprints.map{|s|s.id}
     releases = project.open_releases_by_date.map{|s|s.id}
     #following will execute 3 queries and join it as array
-    self.backlog_scope( {:project => project_id, :sprint => nil, :release => nil } ).
+    self.backlog_scope( {project: project_id, sprint: nil, release: nil } ).
           updated_since(since) |
-      self.backlog_scope( {:project => project_id, :sprint => sprints, :release => nil } ).
+      self.backlog_scope( {project: project_id, sprint: sprints, release: nil } ).
           updated_since(since) |
-      self.backlog_scope( {:project => project_id, :sprint => nil, :release => releases } ).
+      self.backlog_scope( {project: project_id, sprint: nil, release: releases } ).
           updated_since(since)
   end
 
   def self.trackers(options = {})
     # legacy
-    options = {:type => options} if options.is_a?(Symbol)
+    options = {type: options} if options.is_a?(Symbol)
 
     # somewhere early in the initialization process during first-time migration this gets called when the table doesn't yet exist
     trackers = []
@@ -213,7 +213,7 @@ class RbStory < Issue
       trackers = [] if trackers.blank?
     end
 
-    trackers = Tracker.where(:id => trackers).all
+    trackers = Tracker.where(id: trackers).all
     trackers = trackers & options[:project].trackers if options[:project]
     trackers = trackers.sort_by { |t| [t.position] }
 
@@ -284,7 +284,6 @@ class RbStory < Issue
     end
   end
 
-
   def update_release_burnchart_data(days,release_burndown_id)
     #Idea: is it feasible to only recalculate missing days?
     calculate_release_burndown_data(days,release_burndown_id)
@@ -298,12 +297,12 @@ class RbStory < Issue
        series.series(:day)]).delete_all
 
     series.each{|s|
-      RbReleaseBurnchartDayCache.create(:issue_id => self.id,
-        :release_id => release_burndown_id,
-        :day => s.day,
-        :total_points => s.total_points.nil? ? 0 : s.total_points,
-        :added_points => s.added_points.nil? ? 0 : s.added_points,
-        :closed_points => s.closed_points.nil? ? 0 : s.closed_points)
+      RbReleaseBurnchartDayCache.create(issue_id: self.id,
+        release_id: release_burndown_id,
+        day: s.day,
+        total_points: s.total_points.nil? ? 0 : s.total_points,
+        added_points: s.added_points.nil? ? 0 : s.added_points,
+        closed_points: s.closed_points.nil? ? 0 : s.closed_points)
     }
   end
 
@@ -320,12 +319,12 @@ class RbStory < Issue
     baseline = [0] * days.size
 
     series = Backlogs::MergedArray.new
-    series.merge(:total_points => baseline.dup)
-    series.merge(:closed_points => baseline.dup)
-    series.merge(:added_points => baseline.dup)
+    series.merge(total_points: baseline.dup)
+    series.merge(closed_points: baseline.dup)
+    series.merge(added_points: baseline.dup)
 
     # Collect data
-    bd = {:points => [], :open => [], :accepted => [], :in_release => [], :rejected => [] }
+    bd = {points: [], open: [], accepted: [], in_release: [], rejected: [] }
     self.history.filter_release(days).each{|d|
       if d.nil? || d[:tracker] != :story
         [:points, :open, :accepted, :in_release, :rejected].each{|k| bd[k] << nil }
@@ -338,12 +337,12 @@ class RbStory < Issue
       end
     }
 
-    series.merge(:accepted => bd[:accepted])
-    series.merge(:points => bd[:points])
-    series.merge(:open => bd[:open])
-    series.merge(:in_release => bd[:in_release])
-    series.merge(:rejected => bd[:rejected])
-    series.merge(:day => days)
+    series.merge(accepted: bd[:accepted])
+    series.merge(points: bd[:points])
+    series.merge(open: bd[:open])
+    series.merge(in_release: bd[:in_release])
+    series.merge(rejected: bd[:rejected])
+    series.merge(day: days)
 
     in_release_first = (bd[:in_release][0] == true)
     index_first = bd[:points].find_index{|i| i}
@@ -399,7 +398,7 @@ class RbStory < Issue
     sprint ||= self.fixed_version.becomes(RbSprint) if self.fixed_version
     return nil if sprint.nil? || !sprint.has_burndown?
 
-    bd = {:points_committed => [], :points_accepted => [], :points_resolved => [], :hours_remaining => []}
+    bd = {points_committed: [], points_accepted: [], points_resolved: [], hours_remaining: []}
 
     self.history.filter(sprint, status).each{|d|
       if d.nil? || d[:sprint] != sprint.id || d[:tracker] != :story
@@ -432,7 +431,7 @@ class RbStory < Issue
           break if status.default_done_ratio.to_f > avg_ratio
         }
         #set status and good.
-        self.journalized_update_attributes :status_id => new_st.id if new_st
+        self.journalized_update_attributes status_id: new_st.id if new_st
         set_closed_status_if_following_to_close
 
         #calculate done_ratio weighted from tasks
@@ -449,7 +448,7 @@ class RbStory < Issue
           tasks.each{|task|
             return unless task.status.is_closed?
           }
-          self.journalized_update_attributes :status_id => status_id.to_i #update, but no need to position
+          self.journalized_update_attributes status_id: status_id.to_i #update, but no need to position
         end
   end
 
