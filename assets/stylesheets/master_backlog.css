@@ -428,6 +428,7 @@ ul li { vertical-align: bottom; } /* close IE7 gap between list items */
   text-align:right;
   float: left;
   width:34px;
+  height:15px;
 }
 /*meta in story*/
 #backlogs_container .stories .story .fixed_version_id,
@@ -556,13 +557,13 @@ ul li { vertical-align: bottom; } /* close IE7 gap between list items */
   padding: 0px;
   height: inherit;
   width: 40px;
+  height: 24px;
   overflow: visible;
 }
 #backlogs_container .stories .story.editing input.story_points.editor {
   display:block;
-  height:10px;
+  height:24px;
   margin:0;
-  float: right;
 }
 #backlogs_container .stories .story.editing .subject.editor {
   white-space: inherit;
