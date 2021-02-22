@@ -114,7 +114,7 @@ class RbIssueHistory < ActiveRecord::Base
     convert = lambda {|prop, v|
       if v.to_s == ''
         nil
-      elsif [:estimated_hours, :remaining_hours, :story_points].include?(prop)
+      elsif [:estimated_hours, :remaining_hours, :rb_story_points].include?(prop)
         Float(v)
       else
         Integer(v)
@@ -127,7 +127,7 @@ class RbIssueHistory < ActiveRecord::Base
 
       ## TODO: SKIP estimated_hours and remaining_hours if not a leaf node
       journal.details.each{|jd|
-        next unless jd.property == 'attr' && ['estimated_hours', 'story_points', 'remaining_hours', 'fixed_version_id', 'status_id', 'tracker_id','release_id'].include?(jd.prop_key)
+        next unless jd.property == 'attr' && ['estimated_hours', 'rb_story_points', 'remaining_hours', 'fixed_version_id', 'status_id', 'tracker_id','release_id'].include?(jd.prop_key)
 
         prop = jd.prop_key.intern
         update = {old: convert.call(prop, jd.old_value), new: convert.call(prop, jd.value)}
@@ -137,7 +137,7 @@ class RbIssueHistory < ActiveRecord::Base
         case prop
         when :estimated_hours, :remaining_hours # these sum to their parents
           full_journal[date][prop] = update
-        when :story_points
+        when :rb_story_points
           full_journal[date][prop] = update
         when :fixed_version_id
           full_journal[date][:sprint] = update
@@ -160,7 +160,7 @@ class RbIssueHistory < ActiveRecord::Base
         date = j.timestamp.to_date
         full_journal[date] ||= {}
         case j.property
-        when 'story_points' then full_journal[date][:story_points] = {new: j.value ? j.value.to_f : nil}
+        when 'rb_story_points' then full_journal[date][:rb_story_points] = {new: j.value ? j.value.to_f : nil}
         when 'status_success' then full_journal[date][:status_success] = {new: j.value == 'true'}
         when 'status_open' then full_journal[date][:status_open] = {new: j.value == 'true'}
         when 'fixed_version_id' then full_journal[date][:sprint] = {new: j.value ? j.value.to_i : nil}
@@ -184,7 +184,7 @@ class RbIssueHistory < ActiveRecord::Base
     end
 
     full_journal[issue.updated_on.to_date] = {
-      story_points: {new: issue.story_points},
+      rb_story_points: {new: issue.rb_story_points},
       sprint: {new: issue.fixed_version_id },
       release: {new: issue.release_id },
       status_id: {new: issue.status_id },
@@ -289,7 +289,7 @@ class RbIssueHistory < ActiveRecord::Base
     # fill out journal so each journal entry is complete on each day
     rb.history.each{|h|
       h[:estimated_hours] = issue.estimated_hours             unless h.include?(:estimated_hours)
-      h[:story_points] = issue.story_points                   unless h.include?(:story_points)
+      h[:rb_story_points] = issue.rb_story_points                   unless h.include?(:rb_story_points)
       h[:remaining_hours] = issue.remaining_hours             unless h.include?(:remaining_hours)
       h[:tracker] = RbIssueHistory.issue_type(issue.tracker_id)              unless h.include?(:tracker)
       h[:sprint] = issue.fixed_version_id                     unless h.include?(:sprint)
@@ -332,7 +332,7 @@ class RbIssueHistory < ActiveRecord::Base
     _statuses ||= self.class.statuses
     current = {
       estimated_hours: _issue.estimated_hours,
-      story_points: _issue.story_points,
+      rb_story_points: _issue.rb_story_points,
       remaining_hours: _issue.remaining_hours,
       tracker: RbIssueHistory.issue_type(_issue.tracker_id),
       sprint: _issue.fixed_version_id,

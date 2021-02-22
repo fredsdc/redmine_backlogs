@@ -142,11 +142,11 @@ module BacklogsPlugin
 
           if issue.is_story?
             snippet += '<p>'
-            #snippet += context[:form].label(:story_points)
-            if Backlogs.setting[:story_points].blank?
-              snippet += context[:form].text_field(:story_points, size: 3)
+            #snippet += context[:form].label(:rb_story_points)
+            if Backlogs.setting[:rb_story_points].blank?
+              snippet += context[:form].text_field(:rb_story_points, size: 3)
             else
-              snippet += context[:form].select(:story_points, options_for_select(Backlogs.setting[:story_points].split(',').map(&:to_f), issue.story_points.try(:to_f).try(:to_s)), include_blank: true)
+              snippet += context[:form].select(:rb_story_points, options_for_select(Backlogs.setting[:rb_story_points].split(',').map(&:to_f), issue.rb_story_points.try(:to_f).try(:to_s)), include_blank: true)
             end
             snippet += '</p>'
 

@@ -424,7 +424,7 @@ ul li { vertical-align: bottom; } /* close IE7 gap between list items */
   white-space: nowrap;
 }
 
-#backlogs_container .stories .story .story_points {
+#backlogs_container .stories .story .rb_story_points {
   text-align:right;
   float: left;
   width:34px;
@@ -552,7 +552,7 @@ ul li { vertical-align: bottom; } /* close IE7 gap between list items */
   margin:0;
   width:90px;
 }
-#backlogs_container .stories .story.editing select.story_points.editor {
+#backlogs_container .stories .story.editing select.rb_story_points.editor {
   margin:0;
   padding: 0px;
   height: inherit;
@@ -560,7 +560,7 @@ ul li { vertical-align: bottom; } /* close IE7 gap between list items */
   height: 24px;
   overflow: visible;
 }
-#backlogs_container .stories .story.editing input.story_points.editor {
+#backlogs_container .stories .story.editing input.rb_story_points.editor {
   display:block;
   height:24px;
   margin:0;
@@ -619,7 +619,7 @@ ul li { vertical-align: bottom; } /* close IE7 gap between list items */
 .debug .story .id,
 .debug .story .subject,
 .debug .story .status_id,
-.debug .story .story_points,
+.debug .story .rb_story_points,
 .debug .header .name,
 .debug .header .sprint_start_date,
 .debug .header .effective_date,

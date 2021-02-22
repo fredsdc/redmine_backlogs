@@ -203,7 +203,7 @@ it:
   remaining_story_points: "Punti storia rimanenti"
   story_description: Descrizione
   story_estimation_hours: "Stima (ore)"
-  story_points: Punti
+  rb_story_points: Punti
   story_remaining_hours: "Rimanenti (ore)"
   story_spent_time: "Tempo impiegato"
   story_status: Stato

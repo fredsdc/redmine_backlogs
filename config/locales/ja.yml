@@ -204,7 +204,7 @@ ja:
   remaining_story_points: 残りのストーリーポイント
   story_description: 説明
   story_estimation_hours: 見積もり(時間)
-  story_points: ストーリーポイント
+  rb_story_points: ストーリーポイント
   story_remaining_hours: 残り時間(時間)
   story_spent_time: 消費時間
   story_status: ステータス

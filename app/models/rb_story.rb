@@ -240,20 +240,20 @@ class RbStory < Issue
   end
 
   def set_points(p)
-    return self.journalized_update_attribute(:story_points, nil) if p.blank? || p == '-'
+    return self.journalized_update_attribute(:rb_story_points, nil) if p.blank? || p == '-'
 
-    return self.journalized_update_attribute(:story_points, 0) if p.downcase == 's'
+    return self.journalized_update_attribute(:rb_story_points, 0) if p.downcase == 's'
 
-    return self.journalized_update_attribute(:story_points, Float(p)) if Float(p) >= 0
+    return self.journalized_update_attribute(:rb_story_points, Float(p)) if Float(p) >= 0
   end
 
   def points_display(notsized='-')
     # For reasons I have yet to uncover, activerecord will
     # sometimes return numbers as Fixnums that lack the nil?
     # method. Comparing to nil should be safe.
-    return notsized if story_points == nil || story_points.blank?
-    return 'S' if story_points == 0
-    return story_points.to_s
+    return notsized if rb_story_points == nil || rb_story_points.blank?
+    return 'S' if rb_story_points == 0
+    return rb_story_points.to_s
   end
 
   def update_and_position!(params)
@@ -329,7 +329,7 @@ class RbStory < Issue
       if d.nil? || d[:tracker] != :story
         [:points, :open, :accepted, :in_release, :rejected].each{|k| bd[k] << nil }
       else
-        bd[:points] << d[:story_points]
+        bd[:points] << d[:rb_story_points]
         bd[:open] << d[:status_open]
         bd[:accepted] << d[:status_success]
         bd[:in_release] << (d[:release] == release_burndown_id)
@@ -346,7 +346,7 @@ class RbStory < Issue
 
     in_release_first = (bd[:in_release][0] == true)
     index_first = bd[:points].find_index{|i| i}
-    story_points_first = index_first ? bd[:points][index_first] : 0
+    rb_story_points_first = index_first ? bd[:points][index_first] : 0
 
     # Extract total, closed and added points during release
     series.each{|p|
@@ -404,9 +404,9 @@ class RbStory < Issue
       if d.nil? || d[:sprint] != sprint.id || d[:tracker] != :story
         [:points_committed, :points_accepted, :points_resolved, :hours_remaining].each{|k| bd[k] << nil}
       else
-        bd[:points_committed] << d[:story_points]
-        bd[:points_accepted] << (d[:status_success] ? d[:story_points] : 0)
-        bd[:points_resolved] << (d[:status_success] || d[:hours].to_f == 0.0 ? d[:story_points] : 0)
+        bd[:points_committed] << d[:rb_story_points]
+        bd[:points_accepted] << (d[:status_success] ? d[:rb_story_points] : 0)
+        bd[:points_resolved] << (d[:status_success] || d[:hours].to_f == 0.0 ? d[:rb_story_points] : 0)
         bd[:hours_remaining] << (d[:status_closed] ? 0 : d[:hours])
       end
     }

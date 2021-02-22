@@ -200,7 +200,7 @@ ru:
   remaining_story_points: "Оставшиеся баллы истории"
   story_description: Описание
   story_estimation_hours: "Оценка (часов)"
-  story_points: Баллы
+  rb_story_points: Баллы
   story_remaining_hours: "Осталось (часов)"
   story_spent_time: "Потрачено времени"
   story_status: Статус

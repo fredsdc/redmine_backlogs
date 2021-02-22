@@ -98,12 +98,12 @@ module Backlogs
       end
 
       def velocity_based_estimate
-        return nil if !self.is_story? || ! self.story_points || self.story_points <= 0
+        return nil if !self.is_story? || ! self.rb_story_points || self.rb_story_points <= 0
 
         hpp = self.project.scrum_statistics.hours_per_point
         return nil if ! hpp
 
-        return Integer(self.story_points * (hpp / 8))
+        return Integer(self.rb_story_points * (hpp / 8))
       end
 
       def backlogs_before_save

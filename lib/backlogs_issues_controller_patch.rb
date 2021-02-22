@@ -27,7 +27,7 @@ module Backlogs
             body = Nokogiri::XML(response.body)
             body.xpath('//issue').each{|issue|
               next unless story_trackers.include?(Integer(issue.at('.//tracker')['id']))
-              issue << body.create_element('story_points', RbStory.find(issue.at('.//id').text).story_points.to_s)
+              issue << body.create_element('rb_story_points', RbStory.find(issue.at('.//id').text).rb_story_points.to_s)
               next unless RbStory.find(issue.at('.//id').text).release
               issue << body.create_element('release', id: RbStory.find(issue.at('.//id').text).release_id.to_s,
                                                       name: RbStory.find(issue.at('.//id').text).release.to_s)
@@ -38,7 +38,7 @@ module Backlogs
             body = JSON.parse(jsonp.present? ? response.body.sub("#{jsonp}(","").chop : response.body)
             (body['issues'] || [body['issue']]).each{|issue|
               next unless story_trackers.include?(issue['tracker']['id'])
-              issue['story_points'] = RbStory.find(issue['id']).story_points
+              issue['rb_story_points'] = RbStory.find(issue['id']).rb_story_points
               next unless RbStory.find(issue['id']).release
               issue['release'] = {release: {:id=> RbStory.find(issue['id']).release_id, name: RbStory.find(issue['id']).release.name}}
             }

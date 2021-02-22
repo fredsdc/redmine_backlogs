@@ -83,7 +83,7 @@ RB.Story = RB.Object.create(RB.Issue, RB.EditableInplace, {
   },
   
   getPoints: function(){
-    points = parseFloat( this.$.find('.story_points').first().text() );
+    points = parseFloat( this.$.find('.rb_story_points').first().text() );
     return ( isNaN(points) ? 0 : points );
   },
 

@@ -13,11 +13,11 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 class RbStats < ActiveRecord::Base
-  REDMINE_PROPERTIES = ['estimated_hours', 'fixed_version_id', 'status_id', 'story_points', 'remaining_hours']
+  REDMINE_PROPERTIES = ['estimated_hours', 'fixed_version_id', 'status_id', 'rb_story_points', 'remaining_hours']
   JOURNALED_PROPERTIES = {
     'estimated_hours'   => :float,
     'remaining_hours'   => :float,
-    'story_points'      => :float,
+    'rb_story_points'      => :float,
     'fixed_version_id'  => :int,
     'status_open'       => :bool,
     'status_success'    => :bool,

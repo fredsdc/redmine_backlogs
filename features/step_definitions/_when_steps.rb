@@ -203,7 +203,7 @@ When /^I view the stories in the issues tab/ do
 end
 
 When /^I view issues tab with backlog columns/ do
-  visit url_for(controller: :issues, action: :index, :project_id=> @project.id, c: ["subject","story_points","release","position","velocity_based_estimate","remaining_hours"], only_path: false)
+  visit url_for(controller: :issues, action: :index, :project_id=> @project.id, c: ["subject","rb_story_points","release","position","velocity_based_estimate","remaining_hours"], only_path: false)
 end
 
 When /^I view the sprint notes$/ do

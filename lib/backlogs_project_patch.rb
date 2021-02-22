@@ -94,11 +94,11 @@ module Backlogs
     end
 
     def test_product_backlog_sized
-      return (@project.status != Project::STATUS_ACTIVE || !@product_backlog.detect{|s| s.story_points.blank? })
+      return (@project.status != Project::STATUS_ACTIVE || !@product_backlog.detect{|s| s.rb_story_points.blank? })
     end
 
     def test_sprints_sized
-      return !Issue.exists?(["story_points is null and fixed_version_id in (?) and tracker_id in (?)", @all_sprints.collect{|s| s.id}, RbStory.trackers])
+      return !Issue.exists?(["rb_story_points is null and fixed_version_id in (?) and tracker_id in (?)", @all_sprints.collect{|s| s.id}, RbStory.trackers])
     end
 
     def test_sprints_estimated

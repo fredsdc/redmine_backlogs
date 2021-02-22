@@ -200,7 +200,7 @@ fr:
   remaining_story_points: "Points restants du scénario"
   story_description: Description
   story_estimation_hours: "Estimation (heures)"
-  story_points: Points
+  rb_story_points: Points
   story_remaining_hours: "Restant à faire (heures)"
   story_spent_time: "Temps passé"
   story_status: Statut

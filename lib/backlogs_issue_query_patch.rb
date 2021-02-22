@@ -66,7 +66,7 @@ module Backlogs
                                         name: l(:field_backlogs_issue_type),
                                         values: [[l(:backlogs_story), "story"], [l(:backlogs_task), "task"], [l(:backlogs_impediment), "impediment"], [l(:backlogs_any), "any"]],
                                         order: 21 },
-            "story_points" => { type: :float,
+            "rb_story_points" => { type: :float,
                                 name: l(:field_story_points),
                                 order: 22 }
                              }
@@ -94,7 +94,7 @@ module Backlogs
 
         @backlog_columns_included = true
 
-        @available_columns << QueryColumn.new(:story_points, sortable: "#{Issue.table_name}.story_points")
+        @available_columns << QueryColumn.new(:rb_story_points, sortable: "#{Issue.table_name}.rb_story_points")
         @available_columns << QueryColumn.new(:velocity_based_estimate)
         @available_columns << QueryColumn.new(:position, sortable: "#{Issue.table_name}.position")
         @available_columns << QueryColumn.new(:remaining_hours, sortable: "#{Issue.table_name}.remaining_hours")

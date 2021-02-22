@@ -73,8 +73,8 @@ filter:progid:DXImageTransform.Microsoft.Gradient(Enabled=1,GradientType=0,Start
     !story.new_record? && story.status.is_closed? ? "closed" : ""
   end
 
-  def story_points_or_empty(story)
-    story.story_points.blank? ? "" : story.story_points
+  def rb_story_points_or_empty(story)
+    story.rb_story_points.blank? ? "" : story.rb_story_points
   end
 
   def record_id_or_empty(story)

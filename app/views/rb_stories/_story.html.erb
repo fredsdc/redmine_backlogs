@@ -36,12 +36,12 @@
     <div class="t"><%= status_label_or_default(story) %></div>
     <div class="v"><%= status_id_or_default(story) %></div>
   </div>
-  <% if Backlogs.setting[:story_points].blank? %>
-  <div class="story_points editable story_points_text story_field" fieldname="story_points" fieldlabel="<%=l(:story_points)%>" fieldtype="input"><%= story_points_or_empty(story) %></div>
+  <% if Backlogs.setting[:rb_story_points].blank? %>
+  <div class="rb_story_points editable rb_story_points_text story_field" fieldname="rb_story_points" fieldlabel="<%=l(:rb_story_points)%>" fieldtype="input"><%= rb_story_points_or_empty(story) %></div>
   <% else %>
-  <div class="story_points editable story_points_select story_field" fieldtype="select" fieldname="story_points" fieldlabel="<%=l(:story_points)%>">
+  <div class="rb_story_points editable rb_story_points_select story_field" fieldtype="select" fieldname="rb_story_points" fieldlabel="<%=l(:rb_story_points)%>">
     <% %w(t v).each do |c| %>
-      <div class="<%=h c %>"><%= story_points_or_empty(story) %></div>
+      <div class="<%=h c %>"><%= rb_story_points_or_empty(story) %></div>
     <% end %>
   </div>
   <% end %>

@@ -203,7 +203,7 @@ tr:
   remaining_story_points: "Kalan öykü puanları"
   story_description: Açıklama
   story_estimation_hours: "Tahimn (saat)"
-  story_points: Puanlar
+  rb_story_points: Puanlar
   story_remaining_hours: "Kalan (saat)"
   story_spent_time: "Geçirilen Zaman"
   story_status: Durum

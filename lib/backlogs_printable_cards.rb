@@ -519,7 +519,7 @@ module BacklogsPrintableCards
         data['subject'] = issue.subject
         data['description'] = issue.description.to_s.strip; data['description'] = data['subject'] if data['description'] == ''
         data['category'] = issue.category ? issue.category.name : ''
-        data['size'] = (issue.story_points ? "#{issue.story_points}" : '?') + ' ' + l(:label_points)
+        data['size'] = (issue.rb_story_points ? "#{issue.rb_story_points}" : '?') + ' ' + l(:label_points)
         data['position'] = issue.position ? issue.position : l(:label_not_prioritized)
         data['path'] = (issue.self_and_ancestors.reverse.collect{|i| "#{i.tracker.name} ##{i.id}"}.join(" : ")) + " (#{data['position']})"
         data['sprint.name'] = issue.fixed_version ? issue.fixed_version.name : I18n.t(:backlogs_product_backlog)

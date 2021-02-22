@@ -7,11 +7,11 @@ Rails.configuration.to_prepare do
   require_dependency 'issue'
 
   if Issue.const_defined? "SAFE_ATTRIBUTES"
-    Issue::SAFE_ATTRIBUTES << "story_points"
+    Issue::SAFE_ATTRIBUTES << "rb_story_points"
     Issue::SAFE_ATTRIBUTES << "position"
     Issue::SAFE_ATTRIBUTES << "remaining_hours"
   else
-    Issue.safe_attributes "story_points", "position", "remaining_hours"
+    Issue.safe_attributes "rb_story_points", "position", "remaining_hours"
   end
 
   require_dependency 'backlogs_time_report_patch'
@@ -52,7 +52,7 @@ Redmine::Plugin.register :redmine_backlogs do
                          :card_spec                 => nil,
                          :story_close_status_id     => '0',
                          :taskboard_card_order      => 'story_follows_tasks',
-                         :story_points              => "1,2,3,5,8",
+                         :rb_story_points              => "1,2,3,5,8",
                          :show_burndown_in_sidebar  => 'enabled',
                          :show_project_name         => nil,
                          scrum_stats_menu_position: 'top',

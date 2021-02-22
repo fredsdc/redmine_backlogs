@@ -200,7 +200,7 @@ es:
   remaining_story_points: "Puntos de historia pendientes"
   story_description: Descripción
   story_estimation_hours: "Estimación (horas)"
-  story_points: Puntos
+  rb_story_points: Puntos
   story_remaining_hours: "Faltante (horas)"
   story_spent_time: "Tiempo gastado"
   story_status: Estado

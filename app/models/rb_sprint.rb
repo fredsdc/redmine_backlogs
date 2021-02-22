@@ -64,7 +64,7 @@ class RbSprint < Version
   end
 
   def points
-    return stories.inject(0){|sum, story| sum + story.story_points.to_i}
+    return stories.inject(0){|sum, story| sum + story.rb_story_points.to_i}
   end
 
   def has_wiki_page

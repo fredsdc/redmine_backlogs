@@ -201,7 +201,7 @@
   remaining_story_points: "gjenværende storypoeng"
   story_description: Beskrivelse
   story_estimation_hours: "Estimert (timer)"
-  story_points: Poeng
+  rb_story_points: Poeng
   story_remaining_hours: "Gjenværene (timer)"
   story_spent_time: "Brukt tid"
   story_status: Status

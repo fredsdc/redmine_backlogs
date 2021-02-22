@@ -200,7 +200,7 @@ nl:
   remaining_story_points: "resterende story points"
   story_description: Omschrijving
   story_estimation_hours: "Schatting (uren)"
-  story_points: Points
+  rb_story_points: Points
   story_remaining_hours: "Resterend (uren)"
   story_spent_time: "Tijd besteed"
   story_status: Status

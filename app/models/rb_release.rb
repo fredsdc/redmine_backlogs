@@ -273,7 +273,7 @@ class RbRelease < ActiveRecord::Base
 
   def remaining_story_points #FIXME merge bohansen_release_chart removed this
     res = 0
-    stories.open.each {|s| res += s.story_points if s.story_points}
+    stories.open.each {|s| res += s.rb_story_points if s.rb_story_points}
     res
   end
 
