@@ -36,7 +36,7 @@ Rails.configuration.to_prepare do
   require_dependency 'linear_regression'
 
   Redmine::AccessControl.permission(:manage_versions).actions << "rb_sprints/close_completed"
-end
+end if ActiveRecord::Base.connection.table_exists? 'users'
 
 
 Redmine::Plugin.register :redmine_backlogs do
